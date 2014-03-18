@@ -1,5 +1,11 @@
+
 language: node_js
 node_js: "0.10"
 
 before_install: npm install -g grunt-cli
 script: "grunt"
+
+env:
+  global:
+    - GH_REF: github.com/dentuzhik/test-assignment.git
+    - secure: B0MQWFp2sYmBsPbXeOsDwcnnYs/but29Sh8m0q+x84PPCTBecbP2GPHPRC6KVf2zGNzCWBuJgQgnQnGOKWnQix72W92Mkrb/4J4DIKTfT0mC1yCUwfUjBpZvHfxm1ii1Xi+49330fq4Sdcm9g4qCqhrS2mCqswDpHzcaD+7/+6g=
