@@ -37,12 +37,33 @@ module.exports = function(grunt) {
         files: '<%= config.paths.app %>/*.html'
       },
       scripts: {
-        files: '<%= config.paths.app %>/scripts/**.js',
-        tasks: [],
+        files: '<%= config.paths.app %>/scripts/es6/**/*.js',
+        tasks: [
+          'clean:transpile',
+          'transpile'
+        ],
       },
       styles: {
-        files: '<%= config.paths.app %>/styles/**.css',
+        files: '<%= config.paths.app %>/styles/**/*.css',
         tasks: []
+      }
+    },
+
+    transpile: {
+      main: {
+        type: 'globals',
+        imports: {
+          'rating-component/rating-component': 'RatingComponent',
+          'rating-item': 'RatingItem',
+          'helpers': 'Helpers',
+        },
+        files: [{
+          expand: true,
+          cwd: '<%= config.paths.app %>/scripts/es6/',
+          src: ['**/*.js'],
+          dest: '<%= config.paths.app %>/scripts/globals',
+          ext: '.js'
+        }]
       }
     },
 
@@ -59,7 +80,7 @@ module.exports = function(grunt) {
       },
       src: [
         'Gruntfile.js',
-        '<%= config.paths.app %>/scripts/**.js'
+        '<%= config.paths.app %>/scripts/es6/**/*.js'
       ]
     },
 
@@ -68,6 +89,11 @@ module.exports = function(grunt) {
         src: [
           '.tmp',
           '<%= config.paths.dest %>'
+        ]
+      },
+      transpile: {
+        src: [
+          '<%= config.paths.app %>/scripts/globals'
         ]
       }
     },
@@ -89,25 +115,25 @@ module.exports = function(grunt) {
             cwd: '<%= config.paths.app %>',
             dest: '<%= config.paths.dest %>',
             src: [
-              '**.html'
+              '**/*.html'
             ]
         }]
       }
     },
 
     rev: {
-        dist: {
-            files: {
-                src: [
-                    '<%= config.paths.dest %>/scripts/{,*/}*.js',
-                    '<%= config.paths.dest %>/styles/{,*/}*.css'
-                ]
-            }
+      dist: {
+        files: {
+          src: [
+            '<%= config.paths.dest %>/scripts/**/*.js',
+            '<%= config.paths.dest %>/styles/**/*.css'
+          ]
         }
+      }
     },
 
     usemin: {
-      css: '<%= config.paths.dest %>/styles/**.css',
+      css: '<%= config.paths.dest %>/styles/**/*.css',
       html: '<%= config.paths.dest %>/index.html'
     },
 
@@ -126,7 +152,7 @@ module.exports = function(grunt) {
           files: [{
             expand: true,
             cwd: '<%= config.paths.dest %>',
-            src: '{,*/}*.html',
+            src: '**/*.html',
             dest: '<%= config.paths.dest %>'
           }]
         }
@@ -141,13 +167,16 @@ module.exports = function(grunt) {
         user: {
           name: 'Denis Tuzhik',
           email: 'dentuzhik@gmail.com'
-        }
+        },
+        silent: true
       },
       src: ['**']
     }
   });
 
   grunt.registerTask('dev', [
+    'clean:transpile',
+    'transpile',
     'connect',
     'open',
     'watch',
@@ -159,6 +188,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('build', [
     'clean',
+    'transpile',
     'useminPrepare',
     'concat',
     'uglify',
