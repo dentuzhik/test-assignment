@@ -1,0 +1,15 @@
+{
+  "camelcase": true,
+  "eqeqeq": true,
+  "curly": true,
+  "undef": true,
+  "unused": true,
+
+  "esnext": true,
+  "browser": true,
+  "node": true,
+  "devel": true,
+
+  "trailing": true,
+  "quotmark": "single"
+}
