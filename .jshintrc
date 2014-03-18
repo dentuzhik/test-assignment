@@ -4,6 +4,7 @@
   "curly": true,
   "undef": true,
   "unused": true,
+  "multistr": true,
 
   "esnext": true,
   "browser": true,
@@ -11,5 +12,11 @@
   "devel": true,
 
   "trailing": true,
-  "quotmark": "single"
+  "quotmark": "single",
+  "laxcomma": true,
+
+  "globals": {
+    "jQuery": true,
+    "RatingComponent": true
+  }
 }
