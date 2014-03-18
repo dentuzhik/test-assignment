@@ -1,5 +1,7 @@
 
 (function() {
+  'use strict';
+
   var Helpers = {
     // See http://stackoverflow.com/a/2117523/1815933
     uuid: function() {
