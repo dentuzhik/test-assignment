@@ -131,6 +131,18 @@ module.exports = function(grunt) {
           }]
         }
     },
+
+    'gh-pages': {
+      options: {
+        base: 'dist',
+        message: 'Deploy to gh-pages branch from master',
+        user: {
+          name: 'Denis Tuzhik',
+          email: 'dentuzhik@gmail.com'
+        }
+      },
+      src: ['**']
+    }
   });
 
   grunt.registerTask('dev', [
@@ -158,5 +170,11 @@ module.exports = function(grunt) {
   grunt.registerTask('default', [
     'test',
     'build'
+  ]);
+
+  grunt.registerTask('deploy', [
+    'test',
+    'build',
+    'gh-pages'
   ]);
 };
