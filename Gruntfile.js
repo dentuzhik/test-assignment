@@ -132,10 +132,12 @@ module.exports = function(grunt) {
         }
     },
 
+    // Will work only in Travis
     'gh-pages': {
       options: {
         base: 'dist',
         message: 'Deploy to gh-pages branch from master',
+        repo: 'https://' + process.env.GH_TOKEN + '@' + process.env.GH_REF,
         user: {
           name: 'Denis Tuzhik',
           email: 'dentuzhik@gmail.com'
