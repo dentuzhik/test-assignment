@@ -56,6 +56,7 @@ RatingComponent.prototype = Object.create({
   create: function() {
     this._render();
     this._addEventListeners();
+    this._addMutationObserver();
 
     return this.el;
   },
@@ -118,17 +119,22 @@ RatingComponent.prototype = Object.create({
             }
           };
 
-      this.el.addEventListener('touchstart', touchmoveHandler, false);
-      this.el.addEventListener('touchmove', touchmoveHandler, false);
-      this.el.addEventListener('touchend', triggerClick, false);
+      this.el.addEventListener('touchstart', touchmoveHandler);
+      this.el.addEventListener('touchmove', touchmoveHandler);
+      this.el.addEventListener('touchend', triggerClick);
 
-      minHandle.addEventListener('touchstart', touchmoveHandler, false);
-      minHandle.addEventListener('touchmove', touchmoveHandler, false);
-      minHandle.addEventListener('touchend', triggerClick, false);
+      // These guys are removed, using mutation observer
+      // Probably attachment from some outher scope is a better idea
+      document.body.addEventListener('touchend', self._elMouseLeaveHandler.bind(this));
+      document.body.addEventListener('touchcancel', self._elMouseLeaveHandler.bind(this));
 
-      maxHandle.addEventListener('touchstart', touchmoveHandler, false);
-      maxHandle.addEventListener('touchmove', touchmoveHandler, false);
-      maxHandle.addEventListener('touchend', triggerClick, false);
+      minHandle.addEventListener('touchstart', touchmoveHandler);
+      minHandle.addEventListener('touchmove', touchmoveHandler);
+      minHandle.addEventListener('touchend', triggerClick);
+
+      maxHandle.addEventListener('touchstart', touchmoveHandler);
+      maxHandle.addEventListener('touchmove', touchmoveHandler);
+      maxHandle.addEventListener('touchend', triggerClick);
 
     // Mouseover events
     } else {
@@ -142,6 +148,8 @@ RatingComponent.prototype = Object.create({
           self._maxMouseoverHandler.call(self);
         }
       }, false);
+
+      this.el.addEventListener('mouseleave', self._elMouseLeaveHandler.bind(this), false);
     }
 
     this.el.addEventListener('click', function(e) {
@@ -152,15 +160,6 @@ RatingComponent.prototype = Object.create({
         // Sets the value and redraws
         self.setValue(items.indexOf(current) + 1);
       }
-    }, false);
-
-    this.el.addEventListener('mouseleave', function() {
-      self._items.forEach(function(item) {
-        item.isChanged = false;
-        item.isChanging = false;
-      });
-      // Since items' values haven't changed, redraw will reset component state
-      self.redraw();
     }, false);
 
     minHandle.addEventListener('click', function() {
@@ -207,6 +206,18 @@ RatingComponent.prototype = Object.create({
   },
 
   /**
+   * Handles ether mouse or touch events, which should cancel value setitng
+   */
+  _elMouseLeaveHandler: function() {
+    this._items.forEach(function(item) {
+      item.isChanged = false;
+      item.isChanging = false;
+    });
+    // Since items' values haven't changed, redraw will reset component state
+    this.redraw();
+  },
+
+  /**
    * Handles either mouse or touch events on handle, which sets MIN_VALUE
    */
   _minMouseoverHandler: function() {
@@ -227,6 +238,28 @@ RatingComponent.prototype = Object.create({
       item.isChanged = true;
     }, this);
     this.redraw();
+  },
+
+  /**
+   * Adds mutation observer, which should removed event listeners attached to
+   * document.body, after component is removed
+   */
+  _addMutationObserver: function() {
+    var self = this
+      , mo = new MutationObserver(function(mutations) {
+          mutations.map(function(mutation) {
+            var removed = Array.prototype.slice.call(mutation.removedNodes);
+            if ( removed.indexOf(self.el) !== -1 ) {
+              document.body.removeEventListener('touchend', self._elMouseLeaveHandler);
+              document.body.removeEventListener('touchcancel', self._elMouseLeaveHandler);
+            }
+          });
+        });
+
+    mo.observe(document.body, {
+      'childList': true,
+      'subtree': true
+    });
   },
 
   /**
