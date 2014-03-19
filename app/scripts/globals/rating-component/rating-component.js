@@ -4,7 +4,6 @@
   var Helpers = __dependency1__;
   var RatingItem = __dependency2__;
 
-  // Class for the component itself
   var RatingComponent = function(options) {
     this.uuid = Helpers.uuid();
 
@@ -31,10 +30,16 @@
   };
 
   RatingComponent.prototype = Object.create({
+    /**
+     * Initializes instance upon creation
+     */
     _init: function() {
       this._createItems();
     },
 
+    /**
+     * Creates instances of items for the component
+     */
     _createItems: function() {
       var items = [];
       for (var i = this.MIN_VALUE; i < this.MAX_VALUE; i++) {
@@ -46,6 +51,10 @@
       this._items = items;
     },
 
+    /**
+     * Creates component
+     * @return {Element}
+     */
     create: function() {
       this._render();
       this._addEventListeners();
@@ -53,6 +62,9 @@
       return this.el;
     },
 
+    /**
+     * Renders component initially
+     */
     _render: function() {
       var el = document.createElement('div')
         , frag = document.createDocumentFragment();
@@ -66,17 +78,24 @@
       this.el.querySelector('ul').appendChild(frag);
     },
 
+    /**
+     * Redraws the whole component
+     */
     redraw: function() {
       for (var i = this._items.length - 1; i >= 0; i--) {
         this._items[i].redraw();
       }
     },
 
+    /**
+     * Attaches necessary event handlers
+     */
     _addEventListeners: function() {
       var self = this
         , minHandle = this.el.firstElementChild
         , maxHandle = this.el.lastElementChild;
 
+      // Touchy replacements for mouseover events, and triggering of click by touchend
       if ( Helpers.isTouchDevice() ) {
         var triggerClick = function(e) {
               var target = getTouchmoveTarget(e);
@@ -89,6 +108,7 @@
             }
           , touchmoveHandler = function(e) {
               var target = getTouchmoveTarget(e);
+              // Stupid event delegation
               if (target.tagName === 'LI') {
                 self._elMouseoverHandler.call(self, target);
               } else if (target === minHandle) {
@@ -110,8 +130,10 @@
         maxHandle.addEventListener('touchmove', touchmoveHandler, false);
         maxHandle.addEventListener('touchend', triggerClick, false);
 
+      // Mouseover events
       } else {
         this.el.addEventListener('mouseover', function(e) {
+          // Stupid event delegation
           if (e.target.tagName === 'LI') {
             self._elMouseoverHandler.call(self, e.target);
           } else if (e.target === minHandle) {
@@ -127,6 +149,7 @@
 
         if (current.tagName === 'LI') {
           var items = Array.prototype.slice.call(current.parentNode.children);
+          // Sets the value and redraws
           self.setValue(items.indexOf(current) + 1);
         }
       }, false);
@@ -136,32 +159,43 @@
           item.isChanged = false;
           item.isChanging = false;
         });
+        // Since items' values haven't changed, redraw will reset component state
         self.redraw();
       }, false);
 
       minHandle.addEventListener('click', function() {
+        // Sets value and redraws
         self.setValue(self.MIN_VALUE);
       }, false);
 
       maxHandle.addEventListener('click', function() {
+        // Sets value and redraws
         self.setValue(self.MAX_VALUE);
       });
     },
 
+    /**
+     * Handles either mouse or touch events on component's items
+     */
     _elMouseoverHandler: function(target) {
       var items = Array.prototype.slice.call(target.parentNode.children)
         , currentIndex = items.indexOf(target);
 
       this._items.forEach(function(item, index) {
+        // Clearing intermediate states
         item.isChanging = false;
         item.isChanged = false;
 
+        // Current value should be dimmed
         if (this._value > this.MIN_VALUE) {
+          // All the items to the right of current are changing (dimmed in UI)
           if (index > currentIndex) {
             item.isChanging = true;
+          // All the items to the right of current are changed (filled in UI)
           } else {
             item.isChanged = true;
           }
+        // Current value is the minimum one
         } else {
           if (index <= currentIndex) {
             item.isChanged = true;
@@ -172,7 +206,11 @@
       this.redraw();
     },
 
+    /**
+     * Handles either mouse or touch events on handle, which sets MIN_VALUE
+     */
     _minMouseoverHandler: function() {
+      // Current value marked as changing
       this._items.forEach(function(item) {
         item.isChanging = true;
         item.isChanged = false;
@@ -180,22 +218,21 @@
       this.redraw();
     },
 
+    /**
+     * Handles either mouse or touch events on handle, which sets MAX_VALUE
+     */
     _maxMouseoverHandler: function() {
+      // All the items are chagned, since we want to set MAX_VALUE
       this._items.forEach(function(item) {
         item.isChanged = true;
       }, this);
       this.redraw();
     },
 
-    toJSON: function() {
-      return {
-        value: this.getValue(),
-        items: this._items.map(function(item) {
-          return item.toJSON();
-        })
-      };
-    },
-
+    /**
+     * Gets the value of the component, using its items
+     * @return {[type]} [description]
+     */
     getValue: function() {
       var index = 0;
       for (var i = this._items.length - 1; i >= 0; i--) {
@@ -207,17 +244,42 @@
       return index;
     },
 
-    setValue: function(value) {
+    /**
+     * Sets the value of all the items of the component and the component itself
+     * @param {Number} value - should be in permitted range
+     */
+    _setValue: function(value) {
       if (value >= this.MIN_VALUE && value <= this.MAX_VALUE) {
         this._items.forEach(function(item, index) {
           item.setValue( +(index < value) );
         });
         this._value = this.getValue();
-        this.redraw();
       } else {
         throw new Error('The value provided is greater than maximum possible!');
       }
-    }
+    },
+
+    /**
+     * Sets the value of the component and redraws it
+     * Seems like a useful sideeffect to me
+     */
+    setValue: function(value) {
+      this._setValue(value);
+      this.redraw();
+    },
+
+    /**
+     * JSON representation of a class (not stringified though)
+     * @return {Object}
+     */
+    toJSON: function() {
+      return {
+        value: this.getValue(),
+        items: this._items.map(function(item) {
+          return item.toJSON();
+        })
+      };
+    },
   });
 
   __exports__.RatingComponent = RatingComponent;

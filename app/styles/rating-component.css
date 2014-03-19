@@ -30,15 +30,19 @@
 	width: 16px;
 	height: 16px;
 	padding: 2px 1px;
+	/* +1 to saved browser requests */
 	background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACW0lEQVQ4T2NkwANOdnMocnAwMOjn/riPSxkjPgO+7jHaxMDIyMjtfNaXZAOuzeM3UrAoPwM0gOHVxV4ThYg357AZgtMF3/Zqrf9vvCMApIn5oudGDvurYDY6wGrA+/VisezqOQv/yxeD5Zke9/7/e29KAo/Xq0UYBvSFMghFevBlswoqqrEKKKoy8iqoMnNLCTFIRjAwsAlD1P9+x8D4YjnDv2/P3v378uD2nw/3b/99//DWxkMfpjKW+THwFnix7uOyX2jCKuePL0zhcn+ebGT4cSj+7MoDv53ATlyVxsBvZ8K8g9NmrgWLfCheQ/4+WsPw/XjyiYM3/3iEdTJ8hIfB3CQGXh8L5m0cVjNsWBSjsBry5+Fyhp8n048ev/7X07+L4TNIEUogbi1mkDc103rA7XMaqwHft5sxXL5yVdGxgeEBTAGKAQ2+DFxZGcFfuB0WYY2db4fiGRYsW8NTupjhK1YDlqczmLjE1J3mMipn+P/nB8OvG7OA6v4zsGmkMTCycDJ8v9DFcHpdo5lnLwPciSg2na1lSFAIWTL//6/3DN/PtX/6/+3ZYqAn/zNySsZxGVXxMbILMrzaEpOkUcUwH6sLbrUxdbNwCOb8/P1r2p3vvO2+Dc/egBRubpASUeH+XMnOwp7598ebaaqVDCVwAzo6OvjFxcXlmJmZhQR+XnL+z8jx9jOrwgcGZmA2RAZ/fzBw/34kwPz/i/AHdoO9f//+fffr169HjIsXL1YBZjiL////SwDV8wExD5ANFGLkBaViqBn/gGKfgWL/gfwvQPwJyH4BFDsBAAyD3QS84v6jAAAAAElFTkSuQmCC');
 	background-repeat: no-repeat;
 	background-position: center center;
 }
 
 .rating-component__item.is-full {
+	/* +1 to saved browser requests */
 	background-image: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAACRklEQVQ4T5WTTWgTURDH/29fkm6bbFKiGPVgU0mrnvwKWlAP1kPTQrQXRQ9KKaiICoIfUEHISaNFb/amRVcQvZQqiiKKCmql1oNFwUZoWkSK1BqbpCbZ7K7ztt3QSlp0YNi3s29+M/Pf9xgWsLedcq0sA2uP54bn28YWAmQfh+4BjLmbEtH/Bny67tuwchnegUqMpZzh4N7x9+Ug83aQe1LTI2kjrUwCdFewV25Mtv4z4GfPkv2VlbkbHJNMcgAGvGa+ILd5Wr7f/BvCruyGf1/Ee9RRpdRzB+o418in/JxlQO8QHZg6dQEPioY8YegVCV1DQp/KDvW+TF1lZ3ZCOdGEZ9yJMHcB9Jx2Spa4kJAAJnUhINosL2LgznM0WhrcPQTftvV4RICGUrIAUHUhImYANqSooe9FApE9F/GrJOK1digtm/HQ4cRWMbdVnQBWPgFMY6aLIl69+YzmXZeQFsXn/IUHJ1GzcRWSIllUFwDbbMDHr6jdHkPSjs8BxKKoOhhBhgDMqk5fbQ2sLkiHW6/hOa0iWxZw+zDCW9ag364ukm0N7DEGR7Cp+TL6ywIGzqHN70W3JZ5EhwBQCSByD1iHgRa5PNpXn0V3WcDQealTgnFM40rXl9/KhWjs27jYeD+2fHHIne5w6ekjhomuug6cKgHi8bgvEAis4Jz7q/MfdphM/pF2BlPgdA1nm56DWxut5mZmUapi3VNd1ycKhcIoU1U1xBhrME1zKe33kntoTSGmWINMm0GxNMVoCGTIJ2k9RrG+P/lx2ATgdRWKAAAAAElFTkSuQmCC');
 }
 
 .rating-component__item.is-changing {
 	opacity: 0.5;
 }
+
+/* PS. Never actually used BEM before */
