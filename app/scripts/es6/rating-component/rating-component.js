@@ -105,6 +105,8 @@ RatingComponent.prototype = Object.create({
             return document.elementFromPoint(touch.clientX, touch.clientY);
           }
         , touchmoveHandler = function(e) {
+            e.preventDefault();
+
             var target = getTouchmoveTarget(e);
             // Stupid event delegation
             if (target.tagName === 'LI') {
