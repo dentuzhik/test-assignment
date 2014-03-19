@@ -75,33 +75,50 @@ RatingComponent.prototype = Object.create({
       , minHandle = this.el.firstElementChild
       , maxHandle = this.el.lastElementChild;
 
-    this.el.addEventListener('mouseover', function(e) {
-      var current = e.target;
-
-      if (current.tagName === 'LI') {
-        var items = Array.prototype.slice.call(current.parentNode.children)
-          , currentIndex = items.indexOf(current);
-
-        self._items.forEach(function(item, index) {
-          item.isChanging = false;
-          item.isChanged = false;
-
-          if (self._value > self.MIN_VALUE) {
-            if (index > currentIndex) {
-              item.isChanging = true;
-            } else {
-              item.isChanged = true;
-            }
-          } else {
-            if (index <= currentIndex) {
-              item.isChanged = true;
-            }
+    if ( Helpers.isTouchDevice() ) {
+      var triggerClick = function(e) {
+            var target = getTouchmoveTarget(e);
+            e.preventDefault();
+            target.click();
           }
-        });
+        , getTouchmoveTarget = function(e) {
+            var touch = e.changedTouches[0];
+            return document.elementFromPoint(touch.clientX, touch.clientY);
+          }
+        , touchmoveHandler = function(e) {
+            var target = getTouchmoveTarget(e);
+            if (target.tagName === 'LI') {
+              self._elMouseoverHandler.call(self, target);
+            } else if (target === minHandle) {
+              self._minMouseoverHandler.call(self);
+            } else if (target === maxHandle) {
+              self._maxMouseoverHandler.call(self);
+            }
+          };
 
-        self.redraw();
-      }
-    });
+      this.el.addEventListener('touchstart', touchmoveHandler, false);
+      this.el.addEventListener('touchmove', touchmoveHandler, false);
+      this.el.addEventListener('touchend', triggerClick, false);
+
+      minHandle.addEventListener('touchstart', touchmoveHandler, false);
+      minHandle.addEventListener('touchmove', touchmoveHandler, false);
+      minHandle.addEventListener('touchend', triggerClick, false);
+
+      maxHandle.addEventListener('touchstart', touchmoveHandler, false);
+      maxHandle.addEventListener('touchmove', touchmoveHandler, false);
+      maxHandle.addEventListener('touchend', triggerClick, false);
+
+    } else {
+      this.el.addEventListener('mouseover', function(e) {
+        if (e.target.tagName === 'LI') {
+          self._elMouseoverHandler.call(self, e.target);
+        } else if (e.target === minHandle) {
+          self._minMouseoverHandler.call(self);
+        } else if (e.target === maxHandle) {
+          self._maxMouseoverHandler.call(self);
+        }
+      }, false);
+    }
 
     this.el.addEventListener('click', function(e) {
       var current = e.target;
@@ -117,15 +134,6 @@ RatingComponent.prototype = Object.create({
         item.isChanged = false;
         item.isChanging = false;
       });
-
-      self.redraw();
-    }, false);
-
-    minHandle.addEventListener('mouseover', function() {
-      self._items.forEach(function(item) {
-        item.isChanging = true;
-        item.isChanged = false;
-      });
       self.redraw();
     }, false);
 
@@ -133,16 +141,48 @@ RatingComponent.prototype = Object.create({
       self.setValue(self.MIN_VALUE);
     }, false);
 
-    maxHandle.addEventListener('mouseover', function() {
-      self._items.forEach(function(item) {
-        item.isChanged = true;
-      });
-      self.redraw();
-    }, false);
-
     maxHandle.addEventListener('click', function() {
       self.setValue(self.MAX_VALUE);
     });
+  },
+
+  _elMouseoverHandler: function(target) {
+    var items = Array.prototype.slice.call(target.parentNode.children)
+      , currentIndex = items.indexOf(target);
+
+    this._items.forEach(function(item, index) {
+      item.isChanging = false;
+      item.isChanged = false;
+
+      if (this._value > this.MIN_VALUE) {
+        if (index > currentIndex) {
+          item.isChanging = true;
+        } else {
+          item.isChanged = true;
+        }
+      } else {
+        if (index <= currentIndex) {
+          item.isChanged = true;
+        }
+      }
+    }, this);
+
+    this.redraw();
+  },
+
+  _minMouseoverHandler: function() {
+    this._items.forEach(function(item) {
+      item.isChanging = true;
+      item.isChanged = false;
+    });
+    this.redraw();
+  },
+
+  _maxMouseoverHandler: function() {
+    this._items.forEach(function(item) {
+      item.isChanged = true;
+    }, this);
+    this.redraw();
   },
 
   toJSON: function() {

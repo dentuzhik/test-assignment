@@ -2,7 +2,10 @@
 article {
 	margin: 10px;
 	padding: 5px;
-	border: 1px solid #ccc;
+	border: 1px solid rgba(200, 200, 200, 0.75);
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	text-align: center;
 }
 
 article h1, article p {

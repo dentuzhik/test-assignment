@@ -17,6 +17,9 @@
 
   "globals": {
     "jQuery": true,
-    "RatingComponent": true
+    "RatingComponent": true,
+
+    // WAT?
+    "DocumentTouch": true
   }
 }

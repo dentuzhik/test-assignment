@@ -5,9 +5,16 @@
 	cursor: pointer;
 }
 
+.rating-component, .rating-component * {
+	-webkit-touch-callout:none;
+  -webkit-text-size-adjust:none;
+  -webkit-tap-highlight-color:rgba(0,0,0,0);
+  -webkit-user-select:none;
+}
+
 .rating-component__min-handle, .rating-component__max-handle{
 	width: 8px;
-	height: 16px;
+	height: 20px;
 	float: left;
 }
 
