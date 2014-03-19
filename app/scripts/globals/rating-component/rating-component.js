@@ -58,7 +58,12 @@
     create: function() {
       this._render();
       this._addEventListeners();
-      this._addMutationObserver();
+
+      // This is only required due to attaching event on document
+      // Can be removed, if these events are moved to some outer scope
+      if ( Helpers.isTouchDevice() ) {
+        this._addMutationObserver();
+      }
 
       return this.el;
     },
