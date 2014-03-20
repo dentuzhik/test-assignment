@@ -2,5 +2,7 @@
 .tmp
 dist
 
+test/globals
+
 node_modules
 npm-debug.log

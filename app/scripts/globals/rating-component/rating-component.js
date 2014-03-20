@@ -166,17 +166,20 @@
           var items = Array.prototype.slice.call(current.parentNode.children);
           // Sets the value and redraws
           self.setValue(items.indexOf(current) + 1);
+          self.redraw();
         }
       }, false);
 
       minHandle.addEventListener('click', function() {
         // Sets value and redraws
         self.setValue(self.MIN_VALUE);
+        self.redraw();
       }, false);
 
       maxHandle.addEventListener('click', function() {
         // Sets value and redraws
         self.setValue(self.MAX_VALUE);
+        self.redraw();
       });
     },
 
@@ -288,24 +291,23 @@
      * Sets the value of all the items of the component and the component itself
      * @param {Number} value - should be in permitted range
      */
-    _setValue: function(value) {
+    setValue: function(value) {
       if (value >= this.MIN_VALUE && value <= this.MAX_VALUE) {
         this._items.forEach(function(item, index) {
           item.setValue( +(index < value) );
         });
         this._value = this.getValue();
       } else {
-        throw new Error('The value provided is greater than maximum possible!');
+        throw new Error('The value provided is invalid!');
       }
     },
 
     /**
-     * Sets the value of the component and redraws it
-     * Seems like a useful sideeffect to me
+     * Returns items of the component
+     * @return {Array}
      */
-    setValue: function(value) {
-      this._setValue(value);
-      this.redraw();
+    getItems: function() {
+      return this._items;
     },
 
     /**

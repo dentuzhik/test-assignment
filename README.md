@@ -4,8 +4,7 @@
 [![Build Status][travis-image]][travis-url] [![devDependency Status][daviddm-image]][daviddm-url]
 
 #### What could be improved
-- Unit tests
-- Saving to localStorage
+- Port to Canvas?
 
 [travis-url]: https://travis-ci.org/dentuzhik/test-assignment
 [travis-image]: https://travis-ci.org/dentuzhik/test-assignment.png?branch=master

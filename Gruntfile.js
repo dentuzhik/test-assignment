@@ -50,18 +50,35 @@ module.exports = function(grunt) {
     },
 
     transpile: {
-      main: {
+      src: {
         type: 'globals',
         imports: {
-          'rating-component/rating-component': 'RatingComponent',
-          'rating-item': 'RatingItem',
           'helpers': 'Helpers',
+          'rating-item': 'RatingItem',
+          'rating-component/rating-component': 'RatingComponent',
         },
         files: [{
           expand: true,
           cwd: '<%= config.paths.app %>/scripts/es6/',
           src: ['**/*.js'],
           dest: '<%= config.paths.app %>/scripts/globals',
+          ext: '.js'
+        }]
+      },
+
+      test: {
+        type: 'globals',
+        imports: {
+          'jasmine': 'jasmine',
+          '../../app/scripts/es6/rating-component/helpers': 'Helpers',
+          '../../app/scripts/es6/rating-component/rating-item': 'RatingItem',
+          '../../app/scripts/es6/rating-component/rating-component': 'RatingComponent',
+        },
+        files: [{
+          expand: true,
+          cwd: 'test/es6/',
+          src: ['**/*.js'],
+          dest: 'test/globals',
           ext: '.js'
         }]
       }
@@ -80,8 +97,25 @@ module.exports = function(grunt) {
       },
       src: [
         'Gruntfile.js',
+        'test/es6/**/*.js',
         '<%= config.paths.app %>/scripts/es6/**/*.js'
       ]
+    },
+
+    jasmine: {
+      main: {
+        src: [
+          '<%= config.paths.app %>/scripts/globals/rating-component/helpers.js',
+          '<%= config.paths.app %>/scripts/globals/rating-component/rating-item.js',
+          '<%= config.paths.app %>/scripts/globals/rating-component/rating-component.js'
+        ],
+        options: {
+          specs: [
+            'test/globals/**/*Spec.js'
+          ],
+          summary: true
+        }
+      }
     },
 
     clean: {
@@ -183,7 +217,9 @@ module.exports = function(grunt) {
   ]);
 
   grunt.registerTask('test', [
-    'jshint'
+    'jshint',
+    'transpile',
+    'jasmine'
   ]);
 
   grunt.registerTask('build', [
